@@ -1,11 +1,12 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var version = require('mongoose-version');
 
 var Account = require('./account');
 var Proposal = require('./proposal')
 
 var Position = new Schema({
-    version: Number,
+    position: String,
     agreements: {
       what: Boolean,
       why: Boolean,
@@ -16,7 +17,8 @@ var Position = new Schema({
     reasons: {
       what: String,
       why: String,
-      how: String
+      how: String,
+      block: String
     },
     owner: {
       type: 'ObjectId',

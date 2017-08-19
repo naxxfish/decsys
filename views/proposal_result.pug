@@ -1,0 +1,49 @@
+extends layout
+
+block content
+ 
+  .row
+    .col-md-6
+      .card
+        .card-body
+          h3.card-title
+            if (proposal.impact == 1)
+              span.badge.badge-secondary Level 1
+            if (proposal.impact == 2)
+              span.badge.badge-primary Level 2
+            if (proposal.impact == 3)
+              span.badge.badge-info Level 3
+            if (proposal.impact == 4)
+              span.badge.badge-warning Level 4
+            if (proposal.impact == 5)
+              span.badge.badge-danger Level 5
+            |  PROPOSAL: #{ proposal.title } 
+          .card-text
+            h4 Votes
+            each result in results
+              
+              if result._id == "dontCare"
+                
+                h5
+                  span.badge.badge-info.badge-pill #{result.value}
+                  |  Don't Care
+              if result._id == "fullySupport"
+                h5 
+                  span.badge.badge-pill.badge-success #{result.value}
+                  |  Fully Support 
+              if result._id == "partiallySupport"
+                h5 
+                  span.badge.badge-pill.badge-warning #{result.value}
+                  |  Partially Support 
+              if result._id == "block"
+                h5 
+                  span.badge.badge-pill.badge-danger #{result.value}        
+                  |  Blocking                           
+    .col-md-6     
+      .card.card-inversemb-3.text-center
+        h4.card-header.card-inverse.invert(class="bg-" + outcome.style)
+         | #{outcome.headline}
+        .card-block
+          .card-body
+            .card-text
+              | #{outcome.extraText}

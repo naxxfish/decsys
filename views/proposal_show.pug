@@ -2,32 +2,41 @@ extends layout
 
 block content
   .row
-    .col-md-6
-      h2 PROPOSAL: #{ proposal.title }
-      if (proposal.impact == 1)
-        span.badge.badge-secondary Level 1
-      if (proposal.impact == 2)
-        span.badge.badge-primary Level 2
-      if (proposal.impact == 3)
-        span.badge.badge-info Level 3
-      if (proposal.impact == 4)
-        span.badge.badge-warning Level 4
-      if (proposal.impact == 5)
-        span.badge.badge-danger Level 5
-      h3 What 
-      p=proposal.what
-      h3 Why
-      p=proposal.why
-      h3 How
-      p=proposal.how
-    .col-md-6
-      h3 Your position
-      if versions
-        h3 Previous versions
-        each oldProposal in versions
-          h2= oldProposal.title
+    .col-md-8
+      .card(style="padding: 1.5rem;")
+        .card-block
+          h3.card-title
+            if (proposal.impact == 1)
+              span.badge.badge-secondary Level 1
+            if (proposal.impact == 2)
+              span.badge.badge-primary Level 2
+            if (proposal.impact == 3)
+              span.badge.badge-info Level 3
+            if (proposal.impact == 4)
+              span.badge.badge-warning Level 4
+            if (proposal.impact == 5)
+              span.badge.badge-danger Level 5
+            |  PROPOSAL: #{ proposal.title } 
+          div.card-text
+            h4 What 
+            div= proposal.what
+            h4 Why
+            div= proposal.why
+            h4 How
+            div= proposal.how
+            
+            if proposal.discourseUrl
+              a(role="button",href=proposal.discourseUrl).btn.btn-info.btn-lg Discourse Thread
+            a(role="button",href="/proposals/edit/" + proposal._id).btn.btn-primary.btn-lg Edit Proposal 
+              
+            
+    .col-md-4
+      .card(style="padding: 1.5rem;")
+        .card-block
+          h3.card-title Your position
+          include position_form.pug
   .row
-    if proposal.discourseUrl
-      a(role="button",href=proposal.discourseUrl).btn.btn-info.btn-lg Discourse Thread
-    a(role="button",href="/proposals/edit/" + proposal._id).btn.btn-primary.btn-lg Edit Proposal 
-    
+    if versions
+      h4 Previous versions
+      each oldProposal in versions
+        h5= oldProposal.title

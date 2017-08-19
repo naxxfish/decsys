@@ -20,8 +20,13 @@ var Proposal = new Schema({
     },
     impact: Number,
     discourseUrl: String,
-    archived: Boolean
-});
+    archived: Boolean,
+    expiries: Date,
+    precursor: {
+      type: 'ObjectId',
+      ref: 'Proposal'
+    }
+}, { timestamps: true });
 Proposal.plugin(version, {collection: 'proposal_versions', suppressVersionIncrement: false, strategy: 'collection'});
 
 module.exports = mongoose.model('Proposal', Proposal);
