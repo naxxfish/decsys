@@ -92,28 +92,28 @@ router.get('/results/:id', function(req, res, next) {
           }
           objectionRecords.forEach(function (objectionRecord) {
             console.log(objectionRecord)
-            if (!objectionRecord.agreements.why && objectionRecord.reasons.why != "")
+            if (objectionRecord.agreements.why === false)
             {
               if (!objectionRecord.anonymous)
                 objections.why.push({'msg':objectionRecord.reasons.why,'person':objectionRecord.owner.username})
               else
                 objections.why.push({'msg':objectionRecord.reasons.why,'person': 'Anonymous'})
             }
-            if (!objectionRecord.agreements.what && objectionRecord.reasons.what != "")
+            if (!objectionRecord.agreements.what === false)
             {
               if (!objectionRecord.anonymous)
                 objections.what.push({'msg':objectionRecord.reasons.what,'person': objectionRecord.owner.username})
               else
                 objections.what.push({'msg':objectionRecord.reasons.what,'person': 'Anonymous'})
             }
-            if (!objectionRecord.agreements.how && objectionRecord.reasons.how != "")
+            if (!objectionRecord.agreements.how === false)
             {
               if (!objectionRecord.anonymous)
                 objections.how.push({'msg':objectionRecord.reasons.how,'person': objectionRecord.owner.username})
               else
                 objections.how.push({'msg':objectionRecord.reasons.how,'person': 'Anonymous'})
             }
-            if (objectionRecord.blocking)
+            if (objectionRecord.blocking === true)
             {
               if (!objectionRecord.anonymous)
                 objections.blocking.push({'msg':objectionRecord.reasons.block,'person': objectionRecord.owner.username})
@@ -202,8 +202,8 @@ router.get('/create', function(req, res, next) {
 
 router.get('/revise/:precursor', function (req, res, next) {
   Proposal.findOne({'_id':req.params['precursor']}, function (err, proposal) {
-   res.render('proposal_revise',{precursor: req.params['precursor'],proposal:proposal})
- });
+    res.render('proposal_revise',{precursor: req.params['precursor'],proposal:proposal})
+  });
 });
 
 router.post('/create', function(req, res, next) {

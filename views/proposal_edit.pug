@@ -5,6 +5,5 @@ block content
     if user
       p #{ user.username }
     form(action='/proposals/edit',method="POST")
-      .form-group
-        input(type="hidden",name="_id",value=proposal._id)
+      input(type="hidden",name="_id",value=proposal._id)
       include proposal_form.pug

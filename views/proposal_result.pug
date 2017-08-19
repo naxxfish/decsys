@@ -47,7 +47,9 @@ block content
                     | #{results.block}
                   else
                     | 0      
-                |  Blocking                           
+                |  Blocking  
+              if proposal.discourseUrl
+                a(role="button",href=proposal.discourseUrl).btn.btn-info.btn-lg Discourse Thread                                         
     .col-md-6     
       .card.card-inverse.mb-3.text-center
         // #{ outcome }
@@ -74,7 +76,7 @@ block content
                   strong has been permenantly blocked
                   |  and cannot be raised again.
   .row
-    .col-md-12
+    .col-md-6
       if outcome == "BLOCKED"
         .card
           h4.card-header.bg-danger Blockers
@@ -85,7 +87,8 @@ block content
                   blockquote.card-blockquote
                     p= objection.msg
                     footer.text-muted.text-right= objection.person      
-      if outcome == "NEEDS_REVISION" || outcome == "BLOCKED"
+    .col-md-6
+      if (outcome == "NEEDS_REVISION" || outcome == "BLOCKED") && (objections.what.length + objections.why.length + objections.how.length) > 0
         .card
           h4.card-header.bg-warning Objections
           .card-body

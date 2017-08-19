@@ -1,0 +1,43 @@
+extends layout
+
+block content
+    h1 Your Positions
+    p The table below shows what your positions on various proposals are.  You can change your position up until the proposal expires and the result is published
+    table.table.table-striped.table-hover
+      thead
+        th Level
+        th  Title 
+        th.text-center Actions
+        th.text-center Your Position
+        th.text-center Proposal Result
+      tbody
+        each position in positions
+          tr
+            td
+              if (position.proposal.impact == 1)
+                span.badge.badge-secondary(title="Affects a few people who are already aware") Level 1 
+              if (position.proposal.impact == 2)
+                span.badge.badge-primary(title="Affects several people, who may not be aware") Level 2 
+              if (position.proposal.impact == 3)
+                span.badge.badge-info(title="Affects a large proportion of members") Level 3 
+              if (position.proposal.impact == 4)
+                span.badge.badge-warning(title="Affects everyone") Level 4 
+              if (position.proposal.impact == 5)
+                span.badge.badge-danger(title="Affects the future of the organisation") Level 5
+            td 
+              a(href="/proposals/view/" + position.proposal._id)=  position.proposal.title
+            td.text-right
+              .control-group
+                // if it's not expired... 
+                a(href="/proposals/view/" + position.proposal._id,role="button").btn.btn-primary.btn-sm Change position
+                // once it has expired
+                a(href="/proposals/results/" + position.proposal._id,role="button").btn.btn-secondary.btn-sm Show Results
+            td.text-center
+              if position.position == "fullySupport"
+                  span.badge.badge-success Fully Support
+              if position.position == "partiallySupport"
+                  span.badge.badge-warning Partially Support
+              if position.position == "block"
+                  span.badge.badge-danger Blocking
+            td.text-center
+              p &nbsp;

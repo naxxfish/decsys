@@ -22,6 +22,7 @@ var LocalStrategy = require('passport-local').Strategy;
 var index = require('./routes/index');
 var users = require('./routes/users');
 var proposals = require('./routes/proposals');
+var positions = require('./routes/positions');
 
 // passport config
 var Account = require('./models/account');
@@ -63,6 +64,7 @@ app.use( helmet() );
 app.use('/', index);
 app.use('/users', users);
 app.use('/proposals', proposals);
+app.use('/positions', positions);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
