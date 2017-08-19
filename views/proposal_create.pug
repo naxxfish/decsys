@@ -1,0 +1,8 @@
+extends layout
+
+block content
+    h1 Create Proposal
+    if user
+      p #{ user.username }
+    form(action='/proposals/create',method="POST")
+      include proposal_form.pug

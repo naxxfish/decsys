@@ -1,0 +1,15 @@
+extends layout
+
+block content
+    h1 Proposal List
+    table.table.table-striped.table-hover
+      thead
+        th  Title 
+        th.text-right link
+      tbody
+        each proposal in proposals
+          tr
+            td 
+              a(href="/proposals/view/" + proposal._id)= proposal.title
+            td.text-right
+              a(href="/proposals/edit/" + proposal._id) [edit]

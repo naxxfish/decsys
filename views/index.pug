@@ -1,0 +1,9 @@
+extends layout
+
+block content
+  .container
+    h1 DecSys
+    if user
+      p #{ user.username }
+    p
+      a(href='/users') Get a list of users

@@ -1,0 +1,36 @@
+doctype html
+html(lang="en")
+  head
+    title= title
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    link(href='/stylesheets/bootstrap.min.css', rel='stylesheet', media='screen')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    
+  body
+    nav.navbar.navbar-expand-md.navbar-dark.bg-dark.fixed-top
+      a.navbar-brand(href="#") DecSys
+      button(type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation").navbar-toggler
+        span.navbar-toggler-icon
+      .collapse.navbar-collapse
+        ul.navbar-nav.mr-auto
+          li.nav-item.active
+            a(href="/proposals").nav-link List Proposals
+          li.nav-item
+            a(href="/proposals/create").nav-link Create Proposal
+          li.nav-item
+            a(href="/positions/").nav-link Review my Positions
+          li.nav-item
+            a(href="/logout").nav-link Log Out
+          
+    .container
+      if (error && error.length > 0)
+         br
+         h4.error-msg= error
+         br
+      div.main-section
+        block content
+ 
+ 
+  script(src='/javascripts/jquery-3.2.1.min.js')
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js",integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4",crossorigin="anonymous")
+  script(src='/javascripts/bootstrap.min.js')

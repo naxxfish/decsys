@@ -1,0 +1,57 @@
+.form-group
+  label(for="title") Title
+  if proposal
+    input(type="text",name="title",placeholder="title",value=proposal.title).form-control
+  else
+    input(type="text",name="title",placeholder="Title",value="").form-control
+  small(id="titleHelp").form-text.text-muted The headline for this proposal
+.form-group
+  label(for="what") What
+  if proposal
+    textarea(name="what",id="what").form-control= proposal.what
+  else
+    textarea(name="what",id="what").form-control
+  small(id="whatHelp").form-text.text-muted What is being proposed?
+.form-group
+  label(for="why") Why
+  if proposal
+    textarea(name="why",id="why").form-control= proposal.why
+  else
+    textarea(name="why",id="why").form-control
+  small(id="whyHelp").form-text.text-muted Why is this neccecary?
+.form-group
+  label(for="how") How
+  if proposal
+    textarea(name="how",id="how").form-control= proposal.how
+  else
+    textarea(name="how",id="how").form-control
+  small(id="howHelp").form-text.text-muted How would this be achieved?
+.form-group
+  label(for="discourseThread") Discourse Thread Link
+  if proposal
+    input(name="discourseUrl",id="discourseUrl",placeholder="http://discourse.org/t/thing-and-stuff",value=proposal.discourseUrl).form-control
+  else
+    input(name="discourseUrl",id="discourseUrl",placeholder="http://discourse.org/t/thing-and-stuff").form-control
+  small(id="discourseHelp").form-text.text-muted URL to Discourse thread about proposal
+.form-group
+  label(for="impact") Impact
+  select(id="impact",name="impact").form-control
+    if proposal
+      option(value="1",selected=proposal.impact==1) Affects a few people who are already aware
+      option(value="2",selected=proposal.impact==2) Affects several people, who may not be aware
+      option(value="3",selected=proposal.impact==3) Affects a large proportion of members
+      option(value="4",selected=proposal.impact==4) Affects everyone
+      option(value="5",selected=proposal.impact==5) Affects the future of the organisation
+    else
+      option(value="1",selected=true) Affects a few people who are already aware
+      option(value="2") Affects several people, who may not be aware
+      option(value="3") Affects a large proportion of members
+      option(value="4") Affects everyone
+      option(value="5") Affects the future of the organisation      
+  small(id="impactHelp").form-text.text-muted How many people does this impact?
+if proposal 
+.form-group
+  button(type="submit").btn.btn-block.btn-primary Save 
+if proposal
+  .form-group
+    button(type="submit").btn.btn-danger.btn-block Archive
