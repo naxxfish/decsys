@@ -24,6 +24,10 @@ var Position = new Schema({
       type: 'ObjectId',
       ref: 'Account'
     },
+    anonymous: {
+      type: Boolean,
+      default: false
+    },
     proposal: {
       type: 'ObjectId',
       ref: 'Proposal',

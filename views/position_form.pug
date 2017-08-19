@@ -18,10 +18,9 @@ form(method="POST",action="/proposals/position/" + proposal._id,id="positionform
          i.glyphicon.glyphicon-chevron-right
        input(type="radio",value="partiallySupport",id="conditionalSupportCheck",checked=(position.position == "partiallySupport"),name="position",data-toggle="collapse",data-target="#conditionalSupportSection").form-check-input
        | I support this idea, except &hellip;
-     
   fieldset.form-check.collapse#conditionalSupportSection
     label.btn.btn-block.btn-warning.btn-indent 
-      input(type="checkbox",id="disagreeWhatCheck",name="disagreeWhat",value="disagreeWhat",checked=(position.agreements.what == false),data-toggle="collapse",data-target='#disagreeWhatReasonSection').form-check-input 
+      input(type="checkbox",id="disagreeWhatCheck",name="disagreeWhat",value="disagreeWhat",checked=(position.agreements.what == false),data-toggle="collapse",data-target='#disagreeWhatReasonSection').form-check-input
       |  &hellip; I don't agree with the proposed action
     label.collapse#disagreeWhatReasonSection
       textarea(type="text",id="disagreeWhatReason",name="disagreeWhatReason",placeholder="Explain why you disagree").form-control-text.form-control
@@ -47,6 +46,10 @@ form(method="POST",action="/proposals/position/" + proposal._id,id="positionform
     label.collapse#blockReasonSection
       textarea(typee="text",id="blockReason",name="blockReason",placeholder="Outline why this should be blocked").form-control-text.form-control
         | #{position.reasons.block}
+  fieldset.form-group
+    label
+      input(type="checkbox",id="anonCheck",name="anonymous",checked=(position.anonymous == true))
+      |  Make this position anonymous
   .form-group
     button(type="submit").btn.btn-primary.btn-lg Save
 script(src="/javascripts/positionform.js")

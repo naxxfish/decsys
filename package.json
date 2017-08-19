@@ -21,6 +21,7 @@
     "express-session": "^1.15.5",
     "helmet": "^3.8.1",
     "jade": "~1.11.0",
+    "jstransformer-markdown-it": "^2.0.0",
     "mongoose": "^4.11.7",
     "mongoose-version": "^1.1.0",
     "morgan": "^1.7.0",

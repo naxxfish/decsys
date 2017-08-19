@@ -6,8 +6,7 @@ var config = __root + '/config/config.js';
 var Account = require(__root + '/models/account');
 var Proposal = require(__root + '/models/proposal');
 var Position = require(__root + '/models/position');
-var outcomes = require(__src + '/outcomes');
-console.log(outcomes)
+
 var express = require('express');
 var passport = require('passport');
 
@@ -17,7 +16,7 @@ router.use(require('connect-ensure-login').ensureLoggedIn())
 
 router.get('/', function(req, res, next) {
   // proposal list
-  Proposal.find({}, function(err, proposals) {
+  Proposal.find({archived: false}, function(err, proposals) {
     res.render('proposal_list', {
       proposals: proposals,
       title: "DecSys Proposals"
@@ -49,7 +48,7 @@ router.get('/results/:id', function(req, res, next) {
         res.sendStatus(500);
         return
       }
-      var outcome = outcomes.PASSED
+      var outcome = "PASSED"
       // lets do some analysis
       var tallies = {}
       result.forEach(function(line) {
@@ -57,20 +56,89 @@ router.get('/results/:id', function(req, res, next) {
       })
       if (tallies.block > 0)
       {
-        outcome = outcomes.BLOCKED
+        outcome = "BLOCKED"
       } else {
         if (tallies.partiallySupport > 0)
         {
-          outcome = outcomes.NEEDS_REVISION
+          outcome = "NEEDS_REVISION"
         }
       }
-      res.render('proposal_result', {
-        proposal: proposal,
-        results: result,
-        outcome: outcome
-      })
+      if (outcome != "PASSED")
+      {
+        Position.find(
+          {
+            'proposal': proposal._id,
+            $or : [
+              {
+                "agreements.what": false
+              },
+              {
+                "agreements.why": false
+              },
+              {
+                "agreements.how": false
+              },
+              {
+                "blocking": true
+              }
+            ]
+          }).populate('owner').exec(function (err, objectionRecords)
+        {
+          var objections = {
+            why: [],
+            what: [],
+            how: [],
+            blocking: []
+          }
+          objectionRecords.forEach(function (objectionRecord) {
+            console.log(objectionRecord)
+            if (!objectionRecord.agreements.why && objectionRecord.reasons.why != "")
+            {
+              if (!objectionRecord.anonymous)
+                objections.why.push({'msg':objectionRecord.reasons.why,'person':objectionRecord.owner.username})
+              else
+                objections.why.push({'msg':objectionRecord.reasons.why,'person': 'Anonymous'})
+            }
+            if (!objectionRecord.agreements.what && objectionRecord.reasons.what != "")
+            {
+              if (!objectionRecord.anonymous)
+                objections.what.push({'msg':objectionRecord.reasons.what,'person': objectionRecord.owner.username})
+              else
+                objections.what.push({'msg':objectionRecord.reasons.what,'person': 'Anonymous'})
+            }
+            if (!objectionRecord.agreements.how && objectionRecord.reasons.how != "")
+            {
+              if (!objectionRecord.anonymous)
+                objections.how.push({'msg':objectionRecord.reasons.how,'person': objectionRecord.owner.username})
+              else
+                objections.how.push({'msg':objectionRecord.reasons.how,'person': 'Anonymous'})
+            }
+            if (objectionRecord.blocking)
+            {
+              if (!objectionRecord.anonymous)
+                objections.blocking.push({'msg':objectionRecord.reasons.block,'person': objectionRecord.owner.username})
+               else
+                objections.blocking.push({'msg':objectionRecord.reasons.block,'person': 'Anonymous'})
+            }
+          })
+          console.log(objections)
+          console.log(tallies, outcome)
+          res.render('proposal_result', {
+            proposal: proposal,
+            results: tallies,
+            outcome: outcome,
+            objections: objections
+          })
+        })
+      } else {
+        console.log(tallies, outcome)
+        res.render('proposal_result', {
+          proposal: proposal,
+          results: tallies,
+          outcome: outcome
+        })
+      }
     })
-
   });
 });
 
@@ -103,7 +171,7 @@ router.get('/view/:id', function(req, res, next) {
       }, function(err, versions) {
         res.render('proposal_show', {
           proposal: proposal,
-          versions: versions.versions,
+          versions: versions,
           position: position
         });
       });
@@ -132,6 +200,12 @@ router.get('/create', function(req, res, next) {
   res.render('proposal_create');
 });
 
+router.get('/revise/:precursor', function (req, res, next) {
+  Proposal.findOne({'_id':req.params['precursor']}, function (err, proposal) {
+   res.render('proposal_revise',{precursor: req.params['precursor'],proposal:proposal})
+ });
+});
+
 router.post('/create', function(req, res, next) {
   console.log(req.body)
   var proposal = new Proposal({
@@ -140,7 +214,8 @@ router.post('/create', function(req, res, next) {
     why: req.body.why,
     how: req.body.how,
     discourseUrl: req.body.disourceUrl,
-    impact: req.body.impact
+    impact: req.body.impact,
+    precursor: req.body.precursor
   });
   proposal.save(function(err) {
     res.redirect('/proposals/view/' + proposal._id)
@@ -198,12 +273,13 @@ router.post('/position/:id', function(req, res, next) {
         reasons: {},
         proposal: req.body._id,
         owner: req.user._id,
-        position: req.body.position
+        position: req.body.position,
+        anonymous: (req.body.anonymous == 'on') ? true : false
       });
     } else {
       myPosition = existingPosition;
+      myPosition.anonymous = (req.body.anonymous == 'on') ? true : false;
     }
-
     myPosition.position = req.body.position;
     switch (req.body.position) {
       case 'dontCare':

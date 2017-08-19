@@ -8,42 +8,106 @@ block content
         .card-body
           h3.card-title
             if (proposal.impact == 1)
-              span.badge.badge-secondary Level 1
+              span.badge.badge-secondary(title="Affects a few people who are already aware") Level 1
             if (proposal.impact == 2)
-              span.badge.badge-primary Level 2
+              span.badge.badge-primary(title="Affects several people, who may not be aware") Level 2
             if (proposal.impact == 3)
-              span.badge.badge-info Level 3
+              span.badge.badge-info(title="Affects a large proportion of members") Level 3
             if (proposal.impact == 4)
-              span.badge.badge-warning Level 4
+              span.badge.badge-warning(title="Affects everyone") Level 4
             if (proposal.impact == 5)
-              span.badge.badge-danger Level 5
+              span.badge.badge-danger(title="Affects the future of the organisation") Level 5
             |  PROPOSAL: #{ proposal.title } 
           .card-text
             h4 Votes
-            each result in results
-              
-              if result._id == "dontCare"
-                
-                h5
-                  span.badge.badge-info.badge-pill #{result.value}
-                  |  Don't Care
-              if result._id == "fullySupport"
-                h5 
-                  span.badge.badge-pill.badge-success #{result.value}
-                  |  Fully Support 
-              if result._id == "partiallySupport"
-                h5 
-                  span.badge.badge-pill.badge-warning #{result.value}
-                  |  Partially Support 
-              if result._id == "block"
-                h5 
-                  span.badge.badge-pill.badge-danger #{result.value}        
-                  |  Blocking                           
+              h5
+                span.badge.badge-secondary.badge-pill 
+                  if results.dontCare
+                    | #{results.dontCare}
+                  else
+                    | 0
+                |  Don't Care
+              h5 
+                span.badge.badge-pill.badge-success 
+                  if results.fullySupport
+                    | #{results.fullySupport}
+                  else
+                    | 0
+                |  Fully Support 
+              h5 
+                span.badge.badge-pill.badge-warning 
+                  if results.partiallySupport
+                    | #{results.partiallySupport}
+                  else
+                    | 0
+                |  Partially Support 
+              h5 
+                span.badge.badge-pill.badge-danger
+                  if results.block
+                    | #{results.block}
+                  else
+                    | 0      
+                |  Blocking                           
     .col-md-6     
-      .card.card-inversemb-3.text-center
-        h4.card-header.card-inverse.invert(class="bg-" + outcome.style)
-         | #{outcome.headline}
+      .card.card-inverse.mb-3.text-center
+        // #{ outcome }
+        if outcome == "PASSED"
+          h4.card-header.card-inverse.invert.bg-success Proposal has passed
+        if outcome == "NEEDS_REVISION"
+          h4.card-header.card-inverse.invert.bg-warning  Proposal requires revision
+        if outcome == "BLOCKED"
+          h4.card-header.card-inverse.invert.bg-danger  Proposal has been blocked
         .card-block
           .card-body
             .card-text
-              | #{outcome.extraText}
+              if outcome == "PASSED"
+                p This proposal has been 
+                  em accepped
+                  |  according to the acceptance criteria set out in the rules
+              if outcome == "NEEDS_REVISION"
+                p This proposal 
+                  em not been accepped
+                  |  according to the acceptance criteria set out in the rules.  It may be revised and re-issued. 
+                a(role="button",href="/proposals/revise/" + proposal._id).btn.btn-warning Revise 
+              if outcome == "BLOCKED"
+                p This proposal 
+                  strong has been permenantly blocked
+                  |  and cannot be raised again.
+  .row
+    .col-md-12
+      if outcome == "BLOCKED"
+        .card
+          h4.card-header.bg-danger Blockers
+          .card-body
+            .card-text
+              if objections.blocking
+                each objection in objections.blocking
+                  blockquote.card-blockquote
+                    p= objection.msg
+                    footer.text-muted.text-right= objection.person      
+      if outcome == "NEEDS_REVISION" || outcome == "BLOCKED"
+        .card
+          h4.card-header.bg-warning Objections
+          .card-body
+            .card-text
+              if objections.what.length > 0
+                h5 What
+                each objection in objections.what
+                  blockquote.card-blockquote
+                    p= objection.msg
+                    footer.text-muted.text-right= objection.person                    
+              if objections.why.length > 0
+                h5 Why
+                each objection in objections.why
+                  blockquote.card-blockquote
+                    p= objection.msg
+                    footer.text-muted.text-right= objection.person  
+              if objections.how.length > 0
+                h5 How
+                each objection in objections.how
+                  blockquote.card-blockquote
+                    p= objection.msg
+                    footer.text-muted.text-right= objection.person  
+
+                   
+              

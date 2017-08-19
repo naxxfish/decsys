@@ -20,7 +20,14 @@ var Proposal = new Schema({
     },
     impact: Number,
     discourseUrl: String,
-    archived: Boolean,
+    archived: {
+      type: Boolean,
+      default: false
+    },
+    anonymous: {
+      type: Boolean,
+      default: false
+    },
     expiries: Date,
     precursor: {
       type: 'ObjectId',
